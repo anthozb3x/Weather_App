@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
@@ -11,9 +11,10 @@ import SearchScreen from '../screens/SearchScreen';
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const TabNavigator = () => {
+const TabNavigator = ({ initialRouteName }: { initialRouteName: string }) => {
   return (
     <Tab.Navigator
+      initialRouteName={initialRouteName}
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
@@ -41,6 +42,22 @@ const TabNavigator = () => {
 };
 
 const AppNavigator = () => {
+  const [activeScreen, setActiveScreen] = useState('Accueil');
+
+  const handleDrawerStateChange = (state: any) => {
+    if (state && state.routes) {
+      const currentScreen = state.routes[state.index].name;
+      setActiveScreen(currentScreen);
+    }
+  };
+
+  const handleTabStateChange = (state: any) => {
+    if (state && state.routes) {
+      const currentScreen = state.routes[state.index].name;
+      setActiveScreen(currentScreen);
+    }
+  };
+
   return (
     <NavigationContainer>
       <Drawer.Navigator
@@ -52,9 +69,43 @@ const AppNavigator = () => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
+          drawerActiveTintColor: '#007AFF',
+          drawerInactiveTintColor: 'gray',
+        }}
+        screenListeners={{
+          state: handleDrawerStateChange,
         }}
       >
-        <Drawer.Screen name="Sun Forecast" component={TabNavigator} />
+        <Drawer.Screen 
+          name="Accueil" 
+          options={{
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="home-outline" size={size} color={color} />
+            ),
+          }}
+        >
+          {() => <TabNavigator initialRouteName="Accueil" />}
+        </Drawer.Screen>
+        <Drawer.Screen 
+          name="Prévisions de pluie" 
+          options={{
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="water-outline" size={size} color={color} />
+            ),
+          }}
+        >
+          {() => <TabNavigator initialRouteName="Prévisions de pluie" />}
+        </Drawer.Screen>
+        <Drawer.Screen 
+          name="Recherche" 
+          options={{
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="search-outline" size={size} color={color} />
+            ),
+          }}
+        >
+          {() => <TabNavigator initialRouteName="Recherche" />}
+        </Drawer.Screen>
       </Drawer.Navigator>
     </NavigationContainer>
   );

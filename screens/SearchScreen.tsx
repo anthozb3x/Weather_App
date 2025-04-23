@@ -97,7 +97,7 @@ const SearchScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Entrez une ville..."
-          placeholderTextColor="#FFF"
+          placeholderTextColor="rgba(255, 255, 255, 0.7)"
           value={city}
           onChangeText={setCity}
         />
@@ -128,10 +128,10 @@ const SearchScreen = () => {
           <Text style={styles.loadingText}>Chargement...</Text>
         </View>
       ) : weatherData ? (
-        <>
+        <ScrollView style={styles.contentScrollView}>
           <CurrentWeather data={weatherData} />
           <ForecastWeather data={weatherData} />
-        </>
+        </ScrollView>
       ) : null}
     </ImageBackground>
   );
@@ -148,23 +148,30 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.75)',
-    borderRadius: 20,
+    height: 50,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 25,
     paddingHorizontal: 20,
     color: '#fff',
     marginRight: 10,
+    fontSize: 16,
   },
   button: {
     backgroundColor: '#007AFF',
     paddingHorizontal: 20,
-    height: 40,
-    borderRadius: 20,
+    height: 50,
+    borderRadius: 25,
     justifyContent: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   recentSearchesContainer: {
     paddingHorizontal: 20,
@@ -176,14 +183,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   recentSearchItem: {
-    backgroundColor: 'rgba(255, 255, 255, 0.75)',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 20,
     marginRight: 10,
   },
   recentSearchText: {
-    color: '#000',
+    color: '#fff',
+    fontSize: 14,
   },
   loadingContainer: {
     flex: 1,
@@ -193,6 +201,9 @@ const styles = StyleSheet.create({
   loadingText: {
     color: '#fff',
     fontSize: 18,
+  },
+  contentScrollView: {
+    flexGrow: 1,
   },
 });
 

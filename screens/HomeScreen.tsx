@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, Alert } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Alert, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as Location from 'expo-location';
 import axios from 'axios';
@@ -80,10 +80,10 @@ const HomeScreen = () => {
           <Text style={styles.loadingText}>Chargement...</Text>
         </View>
       ) : (
-        <>
+        <ScrollView style={styles.scrollView}>
           <CurrentWeather data={weatherData} />
           <ForecastWeather data={weatherData} />
-        </>
+        </ScrollView>
       )}
     </ImageBackground>
   );
@@ -92,6 +92,9 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  scrollView: {
+    flexGrow: 1,
   },
   loadingContainer: {
     flex: 1,
