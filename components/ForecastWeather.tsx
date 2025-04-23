@@ -12,6 +12,8 @@ interface ForecastData {
   day: string;
   temp: number;
   icon: string;
+  humidity: number;
+  wind_speed: number;
 }
 
 interface DayForecast {
@@ -24,8 +26,6 @@ const ForecastWeather: React.FC<ForecastWeatherProps> = ({ data }) => {
 
   useEffect(() => {
     if (data && data.list) {
-      console.log('Processing forecast data:', data);
-      // Build list with necessary data for display
       const forecastsData: ForecastData[] = data.list.map((forecast: any) => {
         let forecastDate = new Date(forecast.dt * 1000);
         return {
@@ -38,18 +38,16 @@ const ForecastWeather: React.FC<ForecastWeatherProps> = ({ data }) => {
           }),
           temp: forecast.main.temp,
           icon: forecast.weather[0].icon,
+          humidity: forecast.main.humidity,
+          wind_speed: forecast.wind.speed,
         };
       });
-      console.log('Forecasts data processed:', forecastsData);
 
-      // Create list containing only forecast days
       let daysGrouped = forecastsData
         .map((forecast: ForecastData) => forecast.day)
         .filter((day: string, index: number, array: string[]) => array.indexOf(day) === index)
-        .slice(0, 5); // Ensure we only get 5 days
-      console.log('Days grouped:', daysGrouped);
+        .slice(0, 5);
 
-      // Create list with forecasts grouped by day
       let forecastsGrouped: DayForecast[] = daysGrouped.map((day: string) => {
         const forecasts = forecastsData.filter((forecast: ForecastData) => forecast.day === day);
         return {
@@ -57,29 +55,23 @@ const ForecastWeather: React.FC<ForecastWeatherProps> = ({ data }) => {
           data: forecasts,
         };
       });
-      console.log('Forecasts grouped by day:', forecastsGrouped);
 
-      // Modify title for today
       if (forecastsGrouped.length > 0) {
         forecastsGrouped[0].day = "Aujourd'hui";
       }
 
       setForecastsGrouped(forecastsGrouped);
-    } else {
-      console.log('No forecast data available');
     }
   }, [data]);
 
   if (forecastsGrouped.length === 0) {
-    console.log('No forecasts to display');
     return null;
   }
 
-  console.log('Rendering forecasts:', forecastsGrouped);
-
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <Text style={styles.title}>Prévisions sur 5 jours</Text>
+      <ScrollView style={styles.forecastScrollView}>
         {forecastsGrouped.map((dayForecast, index) => (
           <View key={index} style={styles.dayContainer}>
             <Text style={styles.dayTitle}>{dayForecast.day}</Text>
@@ -97,8 +89,24 @@ const ForecastWeather: React.FC<ForecastWeatherProps> = ({ data }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
+    padding: 20,
+    margin: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  forecastScrollView: {
+    maxHeight: 400,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 20,
   },
   dayContainer: {
     marginBottom: 20,
@@ -106,7 +114,9 @@ const styles = StyleSheet.create({
   dayTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#fff',
     marginBottom: 10,
+    paddingLeft: 5,
   },
 });
 
